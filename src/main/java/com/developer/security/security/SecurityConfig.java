@@ -14,9 +14,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.inMemoryAuthentication()
 		.withUser("user").password("{noop}user").roles("USER")
 		.and()
-		.withUser("admin").password("{noop}admin").roles("ADMIN")
+		.withUser("admin").password("{noop}admin").roles("ADMIN").authorities("ACCESS_TEST1", "ACCESS_TEST2")
 		.and()
-		.withUser("manager").password("{noop}manager").roles("MANAGER")
+		.withUser("manager").password("{noop}manager").roles("MANAGER").authorities("ACCESS_TEST1")
 		
 		;
 	}
@@ -27,9 +27,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 		.antMatchers("/").permitAll()
 		.antMatchers("/blog/**").authenticated()
-		.antMatchers("/admin/**").hasRole("ADMIN")
-		.antMatchers("/mng/**").hasAnyRole("ADMIN", "MANAGER")
-		.antMatchers("/api/**").authenticated()
+		.antMatchers("/admin/**").hasAuthority("ACCESS_TEST2")
+		.antMatchers("/mng/**").hasAnyAuthority("ACCESS_TEST1", "ACCESS_TEST2")
+		.antMatchers("/api/test2").hasAuthority("ACCESS_TEST2")
 		.and()
 		.httpBasic()
 		;
